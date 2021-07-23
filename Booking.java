@@ -22,7 +22,6 @@ public class Booking {
             this.price = price;        
             this.seats = seats;
             this.paidFor = paidFor;
-            StringBuilder z = new StringBuilder();
             this.bookingNum = String.format("%S-%7S-%02d", userName, routeCode, seats);
             this.newBooking(this.routeCode, this.userName, this.bookingNum, this.seats);
         }
