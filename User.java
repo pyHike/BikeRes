@@ -1,167 +1,258 @@
 /* Lightweight reservation model for bike shuttle business */
 
 /** @author mb 07_18_2021 */
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
+import java.sql.SQLException;
 
-public abstract class User {    
+
+public abstract class User {        
     protected String lastName;
     protected String firstName;
     protected String userName;
     protected String userPwd;
-    public Scanner sc = new Scanner(System.in);
-    static protected Map<String, String> userDirectory = new HashMap<>();
+    protected String email;
+    protected String phone;
     
-    public User() {
-        this.setFirstName();
-        this.setLastName();
-        this.setUserName();
-        this.generatePwd();
-        Customer.custList.add(this.userName);
-        this.userSetupComplete();        
-    }    
-
-    // Constructor overload to bypass prompts for testing purposes
-    public User(String lastName, String firstName, String userName, String userPwd){
+    User() {}    
         
-        if ( userDirectory.containsKey(userName) ) {
-            System.out.println("I'm sorry, user name " + userName + " appears to be in use. User[28]");
-            System.exit(0);
-        }
-
-        if ( !userDirectory.containsKey(userName) ) { 
-            this.userName = userName;
-            if ( userPwd != null ) {
-                setUserPwd(userPwd);
-            }                        
-            else if ( userPwd == null ) {
-                generatePwd();
-            }  
-            this.lastName = lastName;
-            this.firstName = firstName;
-        }
-               
-        userDirectory.put(userName, userPwd);
-        Customer.custList.add(this.userName);
-        this.userSetupComplete();
-    }       
-    
-    public String toString() {
-        return this.userName + " " + this.lastName + " " + this.firstName + " " + this.isUser();
-    }
-    
-    protected boolean isUser() {
-        return userDirectory.containsKey(this.userName);
-    }
-    
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setFirstName() {
-        System.out.println("User[65] Please enter user's first name: ");
-        firstName = sc.next();
-    }    
-    
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    
-    public void setLastName() {
-        System.out.println("User[78] Please enter user's last name: ");
-        lastName = sc.next();
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
+    User(String lastName, String firstName, String userName, String userPwd, String email, String phone) {    
         this.userName = userName;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.userPwd = userPwd;
+        this.email = email;
+        this.phone = phone;
+    }    
+        
+    protected abstract void addUsertoDB() throws ClassNotFoundException, NoSuchAlgorithmException;
+          
+    static boolean isUser(String userName) throws SQLException, ClassNotFoundException {                 
+        return Database.dbContains("users", "userName", userName);
     }
-
-    public void setUserName() {
-        System.out.println("User[91] Please enter a username: ");
-        String newString = sc.next();
-        if ( !User.userDirectory.containsKey(newString) ) {
-            userName = newString;        
-        }
-        else if ( User.userDirectory.containsKey(newString) ) {
-            System.out.println("User[97] I'm sorry, that username already exists.");
-            System.exit(0);
-        }
+        
+    public String getUserName(String email) throws ClassNotFoundException, SQLException {
+        
+        if (User.isUser(email)) {
+            
+            try {
+                
+                return Database.dbValueStr("users", "email", email, "userName");
+            } 
+            catch (SQLException ex) {
+                
+                ex.printStackTrace();
+                return "";
+            }
+        } else { 
+            
+            return "Email + " + email + " does not appear to be in the system. Please try again."; 
+        }  
+    }
+                
+    static void updateFirstName(String userName, String firstName) throws ClassNotFoundException, SQLException {                                      
+        if (User.isUser(userName)) {
+            Database.dbUpdateString("users", "userName", userName, "firstName", firstName);
+        } else { 
+            System.out.println("User does not appear to be in the system. Please try again."); 
+        }  
     }    
     
-    public String getUserPwd() {
-        return userPwd;
+    public static String getFirstName(String userName) throws ClassNotFoundException, SQLException {                        
+        if (User.isUser(userName)) {
+            try {
+                return Database.dbValueStr("users", "userName", userName, "firstName");
+            } 
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                return "";
+            }
+        } else { 
+            return "User + " + userName + " does not appear to be in the system. Please try again."; 
+        }  
+    }
+    
+    static void updateLastName(String userName, String lastName) throws ClassNotFoundException, SQLException {        
+        if (User.isUser(userName)) {
+            Database.dbUpdateString("users", "userName", userName, "lastName", lastName);
+        } else { 
+            System.out.println("User does not appear to be in the system. Please try again."); 
+        }                
+    }
+    
+    public static String getLastName(String userName) throws ClassNotFoundException, SQLException {                        
+        if (User.isUser(userName)) {
+            try {
+                return Database.dbValueStr("users", "userName", userName, "lastName");
+            } 
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                return "";
+            }
+        } else { 
+            return "User + " + userName + " does not appear to be in the system. Please try again."; 
+        }          
+    }  
+    
+    static void updateEmail(String userName, String email) throws ClassNotFoundException, SQLException {        
+        if (User.isUser(userName)) {
+            Database.dbUpdateString("users", "userName", userName, "email", email);
+        } else { 
+            System.out.println("User does not appear to be in the system. Please try again."); 
+        }
+    }
+    
+    public static String getEmail(String userName) throws ClassNotFoundException, SQLException {                
+        if (User.isUser(userName)) {
+            try {
+                return Database.dbValueStr("users", "userName", userName, "email");
+            } 
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                return "";
+            }
+        } else { 
+            return "User + " + userName + " does not appear to be in the system. Please try again."; 
+        }           
+    }    
+    
+    static void updatePhone(String userName, String phone) throws ClassNotFoundException, SQLException {                
+        if (User.isUser(userName)) {
+            Database.dbUpdateString("users", "userName", userName, "phone", phone);
+        } else { 
+            System.out.println("User does not appear to be in the system. Please try again."); 
+        }        
+    }
+    
+    public static String getPhone(String userName) throws ClassNotFoundException, SQLException {                
+        if (User.isUser(userName)) {
+            try {
+                return Database.dbValueStr("users", "userName", userName, "phone");
+            } 
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                return "";
+            }
+        } else { 
+            return "User + " + userName + " does not appear to be in the system. Please try again."; 
+        }          
+    }      
+    
+    void generatePwd() throws ClassNotFoundException, NoSuchAlgorithmException {        
+        System.out.println("Hello " + userName + ", please enter a new password: ");        
+        try (Scanner sc = new Scanner(System.in)) {            
+            this.userPwd = sc.nextLine();             
+            setUserPwd();
+        }
+    }    
+
+    void setUserPwd() throws ClassNotFoundException, NoSuchAlgorithmException {        
+        if ( checkUserPwd(userPwd) == true ) {
+            System.out.println("Password is valid");                        
+            String hashedPwd = doHashing(userPwd);
+            Database.dbUpdateString("users", "userName", this.userName, "userPwd", hashedPwd);            
+        } else if ( checkUserPwd(userPwd) == false ) {            
+            generatePwd();        
+        }
     }
 
-    private void generatePwd() {
-        System.out.println("Hello " + userName + ", please enter a new password: ");
-        String pwd = sc.next();
-        setUserPwd(pwd);
-    }
-    
-    private void setUserPwd(String userPsswd) {
-        if ( PwLength(userPsswd) && HasDigits(userPsswd) && HasLowerCase(userPsswd) && HasUpperCase(userPsswd) && !HasSpecChar(userPsswd) ) {
-            System.out.println("User[108] Password is valid");                        
-            this.userPwd = userPsswd;
-        }        
-        else if ( PwLength(userPsswd) == false ) {
-            System.out.println("User[112] A password must have at least 10 characters.");
+    boolean checkUserPwd(String userPwd) throws ClassNotFoundException, NoSuchAlgorithmException {        
+        boolean rv = false;        
+        
+        if ( PwLength(userPwd) && HasDigits(userPwd) && HasLowerCase(userPwd) && HasUpperCase(userPwd) && !HasSpecChar(userPwd) ) {
+            rv = true;
+        } else if ( PwLength(userPwd) == false ) {
+            System.out.println("A password must have at least 10 characters.");
             generatePwd();
-        }  
-        else if ( HasDigits(userPsswd) == false ) {
-            System.out.println("User[116] A password must have digits.");
+        } else if ( HasDigits(userPwd) == false ) {
+            System.out.println("A password must have digits.");
             generatePwd();
-        }      
-        else if ( HasUpperCase(userPsswd) == false ) {
-            System.out.println("User[120] A password must have upper and lower case characters.");
+        } else if ( HasUpperCase(userPwd) == false ) {
+            System.out.println("A password must have upper and lower case characters.");
             generatePwd();
-        }
-        else if ( HasLowerCase(userPsswd) == false ) {
-            System.out.println("User[125] A password must have upper and lower case characters.");
+        } else if ( HasLowerCase(userPwd) == false ) {
+            System.out.println("A password must have upper and lower case characters.");
+            generatePwd();
+        } else if ( HasSpecChar(userPwd) == true ) {
+            System.out.println("A password consists of only letters and digits.");
             generatePwd();
         }        
-        else if ( HasSpecChar(userPsswd) == true ) {
-            System.out.println("User[130] A password consists of only letters and digits.");
-            generatePwd();
-        }
-    }
-//    
-//    private void setUserPwd2(String userPsswd) {
-//        this.userPwd = userPsswd;
-//        System.out.println("User password now set. Thank you!");
-//    }
+        return rv;
+    }    
+        
+    static boolean validatePwdPrompt() throws ClassNotFoundException, NoSuchAlgorithmException, SQLException {
+        //boolean result = false;
+        Scanner sca = new Scanner(System.in);        
+        System.out.println("Please enter your username: (all caps)");
+        String user = sca.next();
+        System.out.println("Please enter your password: (case sensitive)");
+        String pwd = sca.next();
+        pwd = doHashing(pwd);    
+        
+        return pwd.equals(Database.dbValueStr("users", "userName", user, "userPwd"));        
+    }       // returns true if pwd entered (hashed) matches database hashed value
+
+    static boolean validatePwd(String userName) throws ClassNotFoundException, NoSuchAlgorithmException, SQLException {
+        Scanner sca = new Scanner(System.in);            
+        System.out.println("Hello " + userName + ", please enter your password: (case sensitive)");
+        String pwd = sca.next();
+        pwd = doHashing(pwd);        
+                        
+        return pwd.equals(Database.dbValueStr("users", "userName", userName, "userPwd"));        
+    }       // returns true if pwd entered (hashed) matches database hashed value
     
-    public boolean PwLength(String str) {
-        boolean a = false;
+    static boolean validatePwd(String userName, String userPwd) throws ClassNotFoundException, NoSuchAlgorithmException, SQLException {     
+        userPwd = doHashing(userPwd);        
+        
+        return userPwd.equals(Database.dbValueStr("users", "userName", userName, "userPwd"));        
+    }       // returns true if pwd provided (after being hashed) matches database hashed value
+        
+    private static String doHashing(String userPwd) throws NoSuchAlgorithmException {
+        String algorithm = "MD5";        
+        
+        try {            
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
+
+            messageDigest.update(userPwd.getBytes());
+
+            byte[] resultByteArray = messageDigest.digest();
+
+            StringBuilder sb = new StringBuilder();
+
+            for (byte b: resultByteArray) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();        
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "";
+        }                
+    }
+        
+    private boolean PwLength(String str) {        
+        boolean a = false;        
+        
         if ( str.length() > 9 )
             a = true;
+        
         return a;
-    }
+    }    
     
-    public boolean HasDigits(String str) {
+    private boolean HasDigits(String str) {        
         boolean a = false;
+        
         for ( int b = 0 ; b < str.length() ; b++ ) {
             if ( (str.charAt(b) >= '0') && (str.charAt(b) <= '9') )
                 a = true;
         }
+        
         return a;
-    }
+    }    
 
-    public boolean HasSpecChar(String str) {
+    private boolean HasSpecChar(String str) {        
         boolean z = false;
+        
         for ( int a = 0 ; a < str.length() ; a++ ) {
             if ( 
                 ( (str.charAt(a) < '0') || ((str.charAt(a) > '9') && (str.charAt(a) < 'A')) ) || 
@@ -170,36 +261,38 @@ public abstract class User {
             )
                 z = true;
         }
-        return z;
-    }
-    
-    public boolean HasUpperCase(String str) {
-        int z = 0;
-        for ( int a = 0; a < str.length() ; a++ ) {
-            
-            if ( (str.charAt(a) >= 'A') && (str.charAt(a) <= 'Z') )
-            {
-                    z++;
-            }
-        }
-        return (z != 0);        
-    }    
-    
-    public boolean HasLowerCase(String str) {
-        int z = 0;
-        for ( int a = 0; a < str.length() ; a++ ) {
-            
-            if ( (str.charAt(a) >= 'a') && (str.charAt(a) <= 'z') )
-            {
-                    z++;
-            }
-        }
-        return (z != 0);        
-    }    
         
-    public boolean HasSpecCharOld(String str) {
+        return z;
+    }    
+    
+    private boolean HasUpperCase(String str) {        
+        int z = 0;
+        
+        for ( int a = 0; a < str.length() ; a++ ) {            
+            if ( (str.charAt(a) >= 'A') && (str.charAt(a) <= 'Z') ){
+                z++;
+            }
+        }
+        
+        return (z != 0);        
+    }        
+    
+    private boolean HasLowerCase(String str) {        
+        int z = 0;
+        
+        for ( int a = 0; a < str.length() ; a++ ) {            
+            if ( (str.charAt(a) >= 'a') && (str.charAt(a) <= 'z') ) {
+                z++;
+            }
+        }
+        
+        return (z != 0);        
+    }            
+    
+    private boolean HasSpecCharOld(String str) {        
         boolean z = false;
         String str2 = str.toLowerCase();
+        
         for ( int a = 0 ; a < str2.length() ; a++ ) {                        
             if ( 
                     (str2.charAt(a) == '.') || 
@@ -234,10 +327,12 @@ public abstract class User {
                     z = true;
             }
         }
+        
         return z;                
-    } 
+    }     
     
-    public void userSetupComplete() {
-        System.out.println("User setup completed.");
+    public void userSetupComplete() {        
+        System.out.println("User setup completed. USER[315]");
     }
+    
 }
