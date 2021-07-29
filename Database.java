@@ -426,20 +426,5 @@ public abstract class Database {
                 System.out.println("VendorError: " + ex.getErrorCode());
             }             
         }
-                
-        public static void main(String[] args) throws ClassNotFoundException, SQLException {
-            
-//            System.out.println(dbContains("users", "userName", "STLEE1"));     // true
-//            System.out.println(dbContains("users", "userPwd", "1776Americaa"));    // false
-//            System.out.println(dbContains("shuttles", "shuttleName", "F350-1"));     // true
-//            System.out.println(dbContains("shuttles", "capacity", "9"));    // false        
-//            dbRemove("shuttleruns", "routeCode", "BCCPPLN-21-07-21");
-//            dbRemove("shuttles", "shuttleName", "F350-3");
-//            dbUpdateString("users", "userName", "JSIMON2", "firstName", "Julien");
-//            dbUpdateInt("shuttles", "shuttleName", "F350-3", "capacity", 10);
-//            System.out.println(Database.dbValueInt("shuttleruns", "routeCode", "BCCCNYN-21-07-22", "seatsLeft"));
-//            System.out.println(Database.dbValueStr("users", "userName", "GKCHEST", "userPwd"));
-//            Database.dbRecordToString("bookings", "userName", "STLEE1");
-        }
         
 }
