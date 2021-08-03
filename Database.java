@@ -271,7 +271,7 @@ public abstract class Database {
                 ps.setString(1, newValue);             
                 ps.setString(2, keyValue);
                 ps.executeUpdate();
-                System.out.println("Record is updated successfully in the database......DATABASECHECK[180]");            
+                System.out.println("Record is updated successfully in the database......");            
 
             } catch (SQLException ex) {
                 // handle any errors
@@ -301,7 +301,7 @@ public abstract class Database {
                 ps.setString(2, keyValue);
                 System.out.println(ps);
                 ps.executeUpdate();
-                System.out.println("Record is updated successfully in the database......DATABASECHECK[211]");            
+                System.out.println("Record is updated successfully in the database......");            
 
             } catch (SQLException ex) {
                 // handle any errors
@@ -331,7 +331,7 @@ public abstract class Database {
                 ps.setString(2, keyValue);
                 System.out.println(ps);
                 ps.executeUpdate();
-                System.out.println("Record is updated successfully in the database......DATABASECHECK[211]");            
+                System.out.println("Record is updated successfully in the database......");            
 
             } catch (SQLException ex) {
                 // handle any errors
@@ -361,7 +361,7 @@ public abstract class Database {
                 ps.setString(2, keyValue);
                 System.out.println(ps);
                 ps.executeUpdate();
-                System.out.println("Record is updated successfully in the database......DATABASECHECK[211]");            
+                System.out.println("Record is updated successfully in the database......");            
 
             } catch (SQLException ex) {
                 // handle any errors
@@ -390,7 +390,7 @@ public abstract class Database {
                 ps.setString(1, newValue);                
                 ps.setString(2, oldValue);
                 ps.executeUpdate();
-                System.out.println("Record is updated successfully in the database......DATABASECHECK[241]");            
+                System.out.println("Record is updated successfully in the database......");            
 
             } catch (SQLException ex) {
                 // handle any errors
@@ -417,7 +417,7 @@ public abstract class Database {
                 ps = con.prepareStatement(query);                
                 ps.setString(1, keyValue);
                 ps.executeUpdate();
-                System.out.println("Record has been successfully removed from the database......DATABASECHECK[269]");            
+                System.out.println("Record has been successfully removed from the database......");            
 
             } catch (SQLException ex) {
                 // handle any errors
