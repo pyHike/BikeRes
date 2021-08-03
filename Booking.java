@@ -65,7 +65,7 @@ public class Booking {     // getter and setter cleanup
             ps.setBoolean(6, paidFor);
             ps.executeUpdate();
             ShuttleRun.updateInventory(routeCode, seats);
-            System.out.println("Record is inserted successfully in the database......Booking[82]");            
+            System.out.println("Record is inserted successfully in the database......");            
         } catch (SQLException ex) {
             // handle any errors
             System.out.println("SQLException: " + ex.getMessage());
