@@ -332,7 +332,7 @@ public abstract class User {
     }     
     
     public void userSetupComplete() {        
-        System.out.println("User setup completed. USER[315]");
+        System.out.println("User setup completed.");
     }
     
 }
