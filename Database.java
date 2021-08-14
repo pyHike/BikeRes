@@ -10,10 +10,10 @@ import java.util.ArrayList;
 
 abstract class Database {
 
-    final static String DRIVER = "com.mysql.cj.jdbc.Driver";
-    final static String URL = "jdbc:mysql://localhost:3306/mysql?zeroDateTimeBehavior=CONVERT_TO_NULL";
-    final static String DBUSERNAME = "root";
-    final static String DBPASSWORD = "B0hmBaw3rk1an";
+    final static String DRIVER = "com.mysql.TBD";
+    final static String URL = "jdbc:mysql://localhost:TBD";
+    final static String DBUSERNAME = "TBD";
+    final static String DBPASSWORD = "TBD";
     static Connection con;
 
     static Connection dbConnect() throws ClassNotFoundException {
